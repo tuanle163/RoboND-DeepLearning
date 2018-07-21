@@ -1,11 +1,35 @@
 [![Udacity - Robotics NanoDegree Program](https://s3-us-west-1.amazonaws.com/udacity-robotics/Extra+Images/RoboND_flag.png)](https://www.udacity.com/robotics)
 
-## Deep Learning Project ##
+# Deep Learning Project
+## Author: Tuan Le
+## Date: July 2018
 
+# 1. Fully Convolutional Neural Network
 In this project, you will train a deep neural network to identify and track a target in simulation. So-called “follow me” applications like this are key to many fields of robotics and the very same techniques you apply here could be extended to scenarios like advanced cruise control in autonomous vehicles or human-robot collaboration in industry.
 
-[image_0]: ./docs/misc/sim_screenshot.png
-![alt text][image_0] 
+# 2. Hardware and Software Used
+
+# 3. Data Recording
+
+# 4. Project Implementation
+## 4.1 Code
+## 4.2 Hyper Parameters
+#### Batch Size
+#### Learning Rate
+#### Number of Epochs
+#### Step per Epoch
+#### Workers
+#### Validation Steps
+
+## 4.3 Prediction
+#### With-target Patrol
+#### Without-target Patrol
+#### Distance Detection with Target
+
+## 4.4 Evaluation and Scoring
+## 4.5 Testing in Simulation
+# 5. Future Enhancements
+
 
 ## Setup Instructions
 **Clone the repository**
@@ -15,9 +39,9 @@ $ git clone https://github.com/udacity/RoboND-DeepLearning.git
 
 **Download the data**
 
-Save the following three files into the data folder of the cloned repository. 
+Save the following three files into the data folder of the cloned repository.
 
-[Training Data](https://s3-us-west-1.amazonaws.com/udacity-robotics/Deep+Learning+Data/Lab/train.zip) 
+[Training Data](https://s3-us-west-1.amazonaws.com/udacity-robotics/Deep+Learning+Data/Lab/train.zip)
 
 [Validation Data](https://s3-us-west-1.amazonaws.com/udacity-robotics/Deep+Learning+Data/Lab/validation.zip)
 
@@ -38,7 +62,7 @@ If for some reason you choose not to use Anaconda, you must install the followin
 * Tensorflow 1.2.1
 * NumPy 1.11
 * SciPy 0.17.0
-* eventlet 
+* eventlet
 * Flask
 * h5py
 * PIL
@@ -86,14 +110,14 @@ data/raw_sim_data/validation/run1
 To collect the validation set, repeat both sets of steps above, except using the directory `data/raw_sim_data/validation` instead rather than `data/raw_sim_data/train`.
 
 ### Image Preprocessing ###
-Before the network is trained, the images first need to be undergo a preprocessing step. The preprocessing step transforms the depth masks from the sim, into binary masks suitable for training a neural network. It also converts the images from .png to .jpeg to create a reduced sized dataset, suitable for uploading to AWS. 
+Before the network is trained, the images first need to be undergo a preprocessing step. The preprocessing step transforms the depth masks from the sim, into binary masks suitable for training a neural network. It also converts the images from .png to .jpeg to create a reduced sized dataset, suitable for uploading to AWS.
 To run preprocessing:
 ```
 $ python preprocess_ims.py
 ```
 **Note**: If your data is stored as suggested in the steps above, this script should run without error.
 
-**Important Note 1:** 
+**Important Note 1:**
 
 Running `preprocess_ims.py` does *not* delete files in the processed_data folder. This means if you leave images in processed data and collect a new dataset, some of the data in processed_data will be overwritten some will be left as is. It is recommended to **delete** the train and validation folders inside processed_data(or the entire folder) before running `preprocess_ims.py` with a new set of collected data.
 
@@ -104,7 +128,7 @@ Rename or move `data/train`, and `data/validation`, then move `data/processed_im
 
 **Important Note 3:**
 
-Merging multiple `train` or `validation` may be difficult, it is recommended that data choices be determined by what you include in `raw_sim_data/train/run1` with possibly many different runs in the directory. You can create a temporary folder in `data/` and store raw run data you don't currently want to use, but that may be useful for later. Choose which `run_x` folders to include in `raw_sim_data/train`, and `raw_sim_data/validation`, then run  `preprocess_ims.py` from within the 'code/' directory to generate your new training and validation sets. 
+Merging multiple `train` or `validation` may be difficult, it is recommended that data choices be determined by what you include in `raw_sim_data/train/run1` with possibly many different runs in the directory. You can create a temporary folder in `data/` and store raw run data you don't currently want to use, but that may be useful for later. Choose which `run_x` folders to include in `raw_sim_data/train`, and `raw_sim_data/validation`, then run  `preprocess_ims.py` from within the 'code/' directory to generate your new training and validation sets.
 
 
 ## Training, Predicting and Scoring ##
@@ -120,23 +144,23 @@ With your training and validation data having been generated or downloaded from 
 
 To train complete the network definition in the `model_training.ipynb` notebook and then run the training cell with appropriate hyperparameters selected.
 
-After the training run has completed, your model will be stored in the `data/weights` directory as an [HDF5](https://en.wikipedia.org/wiki/Hierarchical_Data_Format) file, and a configuration_weights file. As long as they are both in the same location, things should work. 
+After the training run has completed, your model will be stored in the `data/weights` directory as an [HDF5](https://en.wikipedia.org/wiki/Hierarchical_Data_Format) file, and a configuration_weights file. As long as they are both in the same location, things should work.
 
-**Important Note** the *validation* directory is used to store data that will be used during training to produce the plots of the loss, and help determine when the network is overfitting your data. 
+**Important Note** the *validation* directory is used to store data that will be used during training to produce the plots of the loss, and help determine when the network is overfitting your data.
 
 The **sample_evalution_data** directory contains data specifically designed to test the networks performance on the FollowME task. In sample_evaluation data are three directories each generated using a different sampling method. The structure of these directories is exactly the same as `validation`, and `train` datasets provided to you. For instance `patrol_with_targ` contains an `images` and `masks` subdirectory. If you would like to the evaluation code on your `validation` data a copy of the it should be moved into `sample_evaluation_data`, and then the appropriate arguments changed to the function calls in the `model_training.ipynb` notebook.
 
-The notebook has examples of how to evaulate your model once you finish training. Think about the sourcing methods, and how the information provided in the evaluation sections relates to the final score. Then try things out that seem like they may work. 
+The notebook has examples of how to evaulate your model once you finish training. Think about the sourcing methods, and how the information provided in the evaluation sections relates to the final score. Then try things out that seem like they may work.
 
 ## Scoring ##
 
-To score the network on the Follow Me task, two types of error are measured. First the intersection over the union for the pixelwise classifications is computed for the target channel. 
+To score the network on the Follow Me task, two types of error are measured. First the intersection over the union for the pixelwise classifications is computed for the target channel.
 
-In addition to this we determine whether the network detected the target person or not. If more then 3 pixels have probability greater then 0.5 of being the target person then this counts as the network guessing the target is in the image. 
+In addition to this we determine whether the network detected the target person or not. If more then 3 pixels have probability greater then 0.5 of being the target person then this counts as the network guessing the target is in the image.
 
-We determine whether the target is actually in the image by whether there are more then 3 pixels containing the target in the label mask. 
+We determine whether the target is actually in the image by whether there are more then 3 pixels containing the target in the label mask.
 
-Using the above the number of detection true_positives, false positives, false negatives are counted. 
+Using the above the number of detection true_positives, false positives, false negatives are counted.
 
 **How the Final score is Calculated**
 
@@ -144,7 +168,7 @@ The final score is the pixelwise `average_IoU*(n_true_positive/(n_true_positive+
 
 **Ideas for Improving your Score**
 
-Collect more data from the sim. Look at the predictions think about what the network is getting wrong, then collect data to counteract this. Or improve your network architecture and hyperparameters. 
+Collect more data from the sim. Look at the predictions think about what the network is getting wrong, then collect data to counteract this. Or improve your network architecture and hyperparameters.
 
 **Obtaining a Leaderboard Score**
 
