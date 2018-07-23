@@ -53,7 +53,25 @@ The convolution sub-layer is the output of convolute operation on prior layer/in
 + This is also called **down sampling** operation during an encoding process in **FCN**.
 
 ##### Normalization Sub-layer
+Normalization sub-layer has ReLU to convert images to non-linear data. With ReLU all negative numbers will become zero; therefore, it creates a stack of images with no negative values.
 
+#### When to and Why use FCN
+
+<p align="center"><img src="./docs/misc/Fully_CN.png"></p>
+
+Normally, a convolutional neural network (CNN) has done a good job in classify a object through scanning that object image. However, when there is more than one object in an image, CNN fails to recognise a expected object due to not reserving spatial information.
+
+The FCN can overcome this challenge by introducing the 1x1 convolution layer, encoder/decoder, and skip connection. Skip connection allows an FCN to use information from previous layer to recognise where is the expected object in an image. 1x1 convolution layer reserve spatial information. Decoder upsamples image data. Since FCN helps recognise the expected object regardless of its location in any image, FCN is usually used for semantic segmentation.
+
+#### 1x1 Convolution
+During down sampling/encoder process, there are some spatial information may loss on the way. A 1x1 convolution transfers all spatial information from an input layer to output layer without reducing the size. In other words, 1x1 convolution prevent loss in spatial information.
+
+#### Reasons to use Encoder/Decoder of FCN
+In CNN, the encoder process tries to capture detail features of an object such as ears, eyes, or noses of a dog. This will be then used to recognise a dog but miss out a bigger picture when there are multiple objects. In real life scenarios, there is not only one objects but many. Therefore, the decoder has come to play an important role in distinguishing the desired object from undesired ones.
+
+The decoder process (or **Transposed Convolution**) unconvolutes a prior input (with abstracted details) into a richer spatial information output. The decoder process is similar to the encoder which needs following parameters; **size of a kernel**, **the number of kernel**, **padding type** and **stride**. These parameters determine the shape of the output. The picture below illustrate a simple process of using `VALID` padding type to deconvolute.
+
+<p align="center"><img src="./docs/misc/decoder.png"></p>
 
 # 2. Hardware Used
 In this project, I used Amazon Web Service EC2 **(AWS)** instance as the hardware part to train my network.
@@ -84,6 +102,8 @@ I am using the data provided by Udacity course. Here is a summary table of the d
 # 4. Project Implementation
 ## 4.1 Code
 #### My Fully Convolutional Network
+
+<p align="center"><img src="./docs/misc/FCN.png"></p>
 
 #### Separable Convolutions
 
@@ -202,8 +222,6 @@ layer_7 shape (?, 160, 160, 32)
 outputs shape: (?, 160, 160, 3)
 ```
 
-<p align="center"><img src="./docs/misc/FCN.png"></p>
-
 ## 4.2 Hyper Parameters
 #### Batch Size
 Batch size is the number of training samples/images will be passed through a FCN. I tried to use small batch (e.g. 20 and 30) on my laptop but the laptop CPU was overloaded. I have to use AWS instance to train my network. AWS instance specification has listed above and is powerful enough to train with large batch size.
@@ -247,29 +265,108 @@ Workers is the maximum number of processor to be used. In the case of the AWS in
     <tr><td align="left">Validation Loss</td> <td align="center">0.0285</td></tr>
     <tr><td align="left">Final Score</td>     <td align="center">0.403539736664</td></tr>
     <tr>
-    <td align="center"><a href="./data/weights/config_model_weights_04">Model Configuration</a></td>
-    <td align="center"><a href="./data/weights/model_weights_04">Model Weights</a></td>
+    <td align="center"><a href="./data/weights/config_model_weights_01">Model Configuration</a></td>
+    <td align="center"><a href="./data/weights/model_weights_01">Model Weights</a></td>
+    </tr>
+</tbody></table>
+
+<table><tbody>
+    <tr><th align="center" colspan="3">Parameters Set 2</td></tr>
+    <tr><th align="center" colspan="3"><img src="./docs/misc/training_06.png"></th></tr>
+    <tr><th align="center">Parameter</th><th align="center">Value</th></tr>
+    <tr><td align="left">Learning Rate</td>   <td align="center">0.1</td></tr>
+    <tr><td align="left">Batch Size</td>      <td align="center">80</td></tr>
+    <tr><td align="left">Epoch Number</td>    <td align="center">100</td></tr>
+    <tr><td align="left">Steps per Epoch</td> <td align="center">52</td></tr>
+    <tr><td align="left">Validation Steps</td><td align="center">15</td></tr>
+    <tr><td align="left">Workers</td>         <td align="center">4</td></tr>
+    <tr><td align="left">Train Loss</td>      <td align="center">0.0116</td></tr>
+    <tr><td align="left">Validation Loss</td> <td align="center">0.0291</td></tr>
+    <tr><td align="left">Final Score</td>     <td align="center">0.379220056591</td></tr>
+    <tr>
+    <td align="center"><a href="./data/weights/config_model_weights_03">Model Configuration</a></td>
+    <td align="center"><a href="./data/weights/model_weights_03">Model Weights</a></td>
+    </tr>
+</tbody></table>
+
+<table><tbody>
+    <tr><th align="center" colspan="3">Parameters Set 3</td></tr>
+    <tr><th align="center" colspan="3"><img src="./docs/misc/training_05.png"></th></tr>
+    <tr><th align="center">Parameter</th><th align="center">Value</th></tr>
+    <tr><td align="left">Learning Rate</td>   <td align="center">0.001</td></tr>
+    <tr><td align="left">Batch Size</td>      <td align="center">120</td></tr>
+    <tr><td align="left">Epoch Number</td>    <td align="center">60</td></tr>
+    <tr><td align="left">Steps per Epoch</td> <td align="center">35</td></tr>
+    <tr><td align="left">Validation Steps</td><td align="center">10</td></tr>
+    <tr><td align="left">Workers</td>         <td align="center">4</td></tr>
+    <tr><td align="left">Train Loss</td>      <td align="center">0.0173</td></tr>
+    <tr><td align="left">Validation Loss</td> <td align="center">0.0295</td></tr>
+    <tr><td align="left">Final Score</td>     <td align="center">0.403380357433</td></tr>
+    <tr>
+    <td align="center"><a href="./data/weights/config_model_weights_02">Model Configuration</a></td>
+    <td align="center"><a href="./data/weights/model_weights_02">Model Weights</a></td>
     </tr>
 </tbody></table>
 
 ## 4.3 Prediction
+
+I found the parameter set 3 has the best result among three so I take prediction test on it.
+
 #### With-target Patrol
+
+<p align="center"><img src="./docs/misc/target_patrol_05.png"></p>
+
+##### Score for while the quad is following behind the target
+* number of validation samples intersection over the union evaluated on: **542**
+* average intersection over union for background is:			 **0.9958124159892631**
+* average intersection over union for other people is: 			 **0.3643537265993829**
+* average intersection over union for the hero is: 			 **0.9131018597379597**
+* number true positives: 						 **539**
+* number false positives:						 **0**
+* number false negativces:						 **0**
+
 #### Without-target Patrol
+
+<p align="center"><img src="./docs/misc/no_target_05.png"></p>
+
+##### Scores for images while the quad is on patrol and the target is not visable
+* Number of validation samples intersection over the union evaulated on: **270**
+* Average intersection over union for background is:			 **0.9862186238906845**
+* Average intersection over union for other people is:			 **0.7207479091350736**
+* Average intersection over union for the hero is:			 **0.0**
+* Number true positives: 						 **0**
+* Number false positives: 						 **66**
+* Number false negatives:						 **0**
+
 #### Distance Detection with Target
 
+<p align="center"><img src="./docs/misc/target_follow_05.png"></p>
+
+##### Scores of measuring the wellness of the neural network on its long distance detection
+* Number of validation samples intersection over the union evaulated on: **322**
+* Average intersection over union for background is: **0.9963566165699331**
+* Average intersection over union for other people is: **0.4369969430791394**
+* Average intersection over union for the hero is: **0.18846013890523833**
+* Number true positives: **126**
+* Number false positives:	**2**
+* Number false negatives: **175**
+
 ## 4.4 Evaluation and Scoring
-We will be using the IoU to calculate the final score. IoU is Intersection over Union, where the Intersection set is an AND operation (pixels that are truly part of a class AND are classified as part of the class by the network) and the Union is an OR operation (pixels that are truly part of that class + pixels that are classified as part of that class by the network).
-Sum all the true positives, etc from the three datasets to get a weight for the score: 0.7341490545050056
+Intersection over Union (IoU) was used to evaluate the network. In this method, an Intersection is an AND operation between an actual pixel of a class and a classified pixel of the class. On other hand, Union is OR operation which is a sum of both pixels. Then dividing the Intersection by Union.
 
-The IoU for the dataset that never includes the hero is excluded from grading: 0.561794675106
+<p align="center"><img src="./docs/misc/iou_formula.png"></p>
 
-The Final Grade Score is the pixel wise:
+
++ Sum all the true positives: **0.7323788546255506**
++ The IoU for the dataset that never includes the hero: **0.550780999322**
+
 ## 4.5 Testing in Simulation
+
+[test video](https://www.youtube.com/watch?v=e4768BDa7pU)
+
 # 5. Future Enhancements
-Recording a bigger dataset capturing more angles/distances of the target will help in further improving the network accuracy.
-
-Adding more layers will also help in capturing more contexts and improve accuracy of segmentation.
-
-Changing learning rate can also be helpful in reducing learning time.
-
-Adding skip connections can improve results but up to a certain number of connections only based on number of layers that we have.
+Here is several points of improvement.
++ Capture more angle of the hero for better training.
++ Obtain higher resolution of image quality.
++ In order to increase the accuracy, more layers of the FCN in both encoder and decoder need to be added.
++ Drop out technique can be applied to the network in order to reduce unnecessary details, thus reduce computing time and capacity.
