@@ -8,19 +8,27 @@ This repository contains code and data of a fully convolutional network that is 
 
 # 1. Fully Convolutional Neural Network
 
+#### Convolutional Neural Network Architecture
+
 A fully Convolution Neural Network (**FCN**) consists of a Convolutional Neural Network (**CNN**) which scan through an image to extract features and, thus, create a deep neural network. This deep neural network will be used in objects classification. A typical **CNN** is illustrate below.
 
 <p align="center"><img src="./docs/misc/CNN_01.png"></p>
 
-Just like the above image, an architecture of a **CNN** usually has an ***input***, ***convolutional layers (Feature Learning)***, and ***a deep neural network (Classification)***. The convolutional layers play a role of learning features of an image through multiple time until they produces a final high-abstract layer. Then, the high-abstract layer will be fed into a deep neural network to start the classification process.
+Just like the above image, an architecture of a **CNN** usually has an ***input***, ***convolutional layers*** ***(Feature Learning)***, and ***a deep neural network*** ***(Classification)***. The convolutional layers play a role of learning features of an image through multiple time until they produces a final high-abstract layer. Then, the high-abstract layer will be fed into a deep neural network to start the classification process.
 
-Each layer in the convolutional layers has many sub-layer. More detail show below.
+Each layer in the convolutional layers has many sub-layers. More detail show below.
 
 <p align ="center"><img src="./docs/misc/CNN_02.png"></p>
 
+These sub-layers normally include **convolution**, **max pooling**, and **normalization**.
+* **Convolution**: this sub-layer is the output of convolute operation on prior layer/input image. The shape of Convolution sub-layer is calculated based on **size of a kernel**, **number of kernel**, **padding type** and **stride**.
 
-# 2. Hardware and Software Used
-In this project, I used Amazon Web Service EC2 instance to train my network.
+$\displaystyle W_{out\ } =\ \frac{W_{in} \ -\ F\ +\ 2P}{S} \ +\ 1$ 
+
+*
+
+# 2. Hardware Used
+In this project, I used Amazon Web Service EC2 **(AWS)** instance as the hardware part to train my network.
 * **Instance type**: p2.xlarge instance
 * **AMI**: Udacity Robotics Deep Learning Laboratory
 * **CPU specification**: 4 x Intel(R) Xeon(R) E5-2686 v4 @ 2.30GHz
@@ -33,16 +41,16 @@ I am using the data provided by Udacity course. Here is a summary table of the d
 <table><tbody>
     <tr><th align="center" colspan="3"><span style="color:darkblue">Data Set</span></td></tr>
     <tr><th align="center"><span style="color:darkblue">Directory</span></th><th align="center"><span style="color:darkblue">Content</span></th></tr>
-    <tr><td align="left">/data/**train**</td><td align="left">**4,131** images and **4,131 masks**</td></tr>
-    <tr><td align="left">/data/**validation**</td><td align="left">**1,184** images and **1,184** masks</td></tr>
-    <tr><td align="left">/data/sample_evalution_data/**following_images**</td>
-       <td align="left">**542** images and **542** masks</td></tr><tr>
-    <td align="left">/data/sample_evalution_data/**patrol_non_targ**</td>
-       <td align="left"> **270** images and **270** masks</td></tr><tr>
-    <td align="left">/data/sample_evalution_data/**patrol_with_targ**</td>
-       <td align="left"> **322** images and **322** masks</td></tr>
-    <td align="left">/data/**weights**</td>
-       <td align="left">  **6** model weights and configuration files </td></tr>
+    <tr><td align="left">/data/<b>train</b></td><td align="left"><b>4,131</b> images and <b>4,131</b> masks</td></tr>
+    <tr><td align="left">/data/<b>validation</b></td><td align="left"><b>1,184</b> images and <b>1,184</b> masks</td></tr>
+    <tr><td align="left">/data/sample_evalution_data/<b>following_images</b></td>
+       <td align="left"><b>542</b> images and <b>542</b> masks</td></tr><tr>
+    <td align="left">/data/sample_evalution_data/<b>patrol_non_targ</b></td>
+       <td align="left"> <b>270</b> images and <b>270</b> masks</td></tr><tr>
+    <td align="left">/data/sample_evalution_data/<b>patrol_with_targ</b></td>
+       <td align="left"> <b>322</b> images and <b>322</b> masks</td></tr>
+    <td align="left">/data/<b>weights</b></td>
+       <td align="left">  <b>6</b> model weights and configuration files </td></tr>
 </tbody></table>
 
 # 4. Project Implementation
