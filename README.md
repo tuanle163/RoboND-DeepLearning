@@ -14,18 +14,46 @@ A fully Convolution Neural Network (**FCN**) consists of a Convolutional Neural 
 
 <p align="center"><img src="./docs/misc/CNN_01.png"></p>
 
-Just like the above image, an architecture of a **CNN** usually has an ***input***, ***convolutional layers*** ***(Feature Learning)***, and ***a deep neural network*** ***(Classification)***. The convolutional layers play a role of learning features of an image through multiple time until they produces a final high-abstract layer. Then, the high-abstract layer will be fed into a deep neural network to start the classification process.
+Just like the above image, an architecture of a **CNN** usually has an ***input***, ***convolutional layers*** (Feature Learning), and ***a deep neural network*** (Classification). The convolutional layers play a role of learning features of an image through multiple time until they produces a final high-abstract layer. Then, the high-abstract layer will be fed into a deep neural network to start the classification process.
 
 Each layer in the convolutional layers has many sub-layers. More detail show below.
 
 <p align ="center"><img src="./docs/misc/CNN_02.png"></p>
 
 These sub-layers normally include **convolution**, **max pooling**, and **normalization**.
-* **Convolution**: this sub-layer is the output of convolute operation on prior layer/input image. The shape of Convolution sub-layer is calculated based on **size of a kernel**, **number of kernel**, **padding type** and **stride**.
 
-$\displaystyle W_{out\ } =\ \frac{W_{in} \ -\ F\ +\ 2P}{S} \ +\ 1$ 
+##### Convolution Sub-layer
 
-*
+Each image contains a structured like this. Height, width, and three channels of color as a depth dimension of an input layer.
+
+<p align="center"><img src="./docs/misc/an_image.png"></p>
+
+The convolution sub-layer is the output of convolute operation on prior layer/input image. The shape of Convolution sub-layer is calculated based on **size of a kernel**, **the number of kernel**, **padding type** and **stride**.
+
+
+<p align="center"><img src="./docs/misc/convolution_formula.png"></p>
+
++ `W_out`, `H_out` and `D_out` is the dimension of the output layer.
++ `W_in`, `H_in`, and `D_in` is the dimension of the input layer.
++ `F` is the **kernel/filter size**. For example, a kernel of size 1x1, then F = 1.
++ `P` is **padding type**. The ***valid*** padding type will result to 1 and the ***same*** padding type is 0.
++ `S` is the **stride** value. Stride 1 will have S = 1.
++ `K` is **the number of kernel/filter**.
+
+![alt text](http://xrds.acm.org/blog/wp-content/uploads/2016/06/Figure_2.png "Convolution")
+
+##### Max Pooling Sub-layer
+
+<p align="center"><img src="./docs/misc/max_pooling.png"></p>
+
++ Max pooling operation is similar to convolution operation at which it has a kernel/filter of size **x**. The kernel scans across the convolution sub-layer and pick out the maximum value.
+
++ Pooling reduces the spatial dimension (width and height) but does not affect the depth.
+
++ This is also called **down sampling** operation during an encoding process in **FCN**.
+
+##### Normalization Sub-layer
+
 
 # 2. Hardware Used
 In this project, I used Amazon Web Service EC2 **(AWS)** instance as the hardware part to train my network.
@@ -56,7 +84,6 @@ I am using the data provided by Udacity course. Here is a summary table of the d
 # 4. Project Implementation
 ## 4.1 Code
 #### My Fully Convolutional Network
-
 
 #### Separable Convolutions
 
@@ -179,11 +206,51 @@ outputs shape: (?, 160, 160, 3)
 
 ## 4.2 Hyper Parameters
 #### Batch Size
+Batch size is the number of training samples/images will be passed through a FCN. I tried to use small batch (e.g. 20 and 30) on my laptop but the laptop CPU was overloaded. I have to use AWS instance to train my network. AWS instance specification has listed above and is powerful enough to train with large batch size.
+
+I carried out three training with two different batch size (**110** and **120**). I chosed these values depend on AWS instance CPU computational capacity and training time.
+
 #### Learning Rate
+Learning rate controls the network weights adjustment with respect to loss gradient. In other word, it is how fast for a network to converge at the minium loss during a gradient descent operation.
+
+I have experiment with several learning rate (**0.15**, **0.1**, **0.01**, **0.001**) and found the best range is between **0.01 and 0.001**.
+
 #### Number of Epochs
+An epoch is the time for a sample batch feed forward and backward once. The more the number of epoch the more accurate that network will be. After experiment with a variety of values, I found that with the learning rate between 0.01 and 0.001, the network converge quickly after 20 epochs. Therefore, I chose the number of epoch is **100** to have an accurate network but is not over trained.
+
 #### Step per Epoch
-#### Workers
+Step per epoch is determined by the batch size and the number of training sample. With the training data set above (4131 images) and the batch size of 120, step per epoch is approximately 35.
+
+The formula is shown below:
+<p align="center"><img src="./docs/misc/step_per_epoch.png"></p>
+
 #### Validation Steps
+Same with the step per epoch parameter, the batch size and the number of validation sample decide the number of step.
+<p align="center"><img src="./docs/misc/validation_step.png"></p>
+
+#### Workers
+Workers is the maximum number of processor to be used. In the case of the AWS instance, there are maximum of **4** CPU cores. I used all of them to train my network.
+
+#### Summary of Trainings
+
+<table><tbody>
+    <tr><th align="center" colspan="3">Parameters Set 1</td></tr>
+    <tr><th align="center" colspan="3"><img src="./docs/misc/training_04.png"></th></tr>
+    <tr><th align="center">Parameter</th><th align="center">Value</th></tr>
+    <tr><td align="left">Learning Rate</td>   <td align="center">0.01</td></tr>
+    <tr><td align="left">Batch Size</td>      <td align="center">110</td></tr>
+    <tr><td align="left">Epoch Number</td>    <td align="center">50</td></tr>
+    <tr><td align="left">Steps per Epoch</td> <td align="center">38</td></tr>
+    <tr><td align="left">Validation Steps</td><td align="center">50</td></tr>
+    <tr><td align="left">Workers</td>         <td align="center">4</td></tr>
+    <tr><td align="left">Train Loss</td>      <td align="center">0.0103</td></tr>
+    <tr><td align="left">Validation Loss</td> <td align="center">0.0285</td></tr>
+    <tr><td align="left">Final Score</td>     <td align="center">0.403539736664</td></tr>
+    <tr>
+    <td align="center"><a href="./data/weights/config_model_weights_04">Model Configuration</a></td>
+    <td align="center"><a href="./data/weights/model_weights_04">Model Weights</a></td>
+    </tr>
+</tbody></table>
 
 ## 4.3 Prediction
 #### With-target Patrol
@@ -191,5 +258,18 @@ outputs shape: (?, 160, 160, 3)
 #### Distance Detection with Target
 
 ## 4.4 Evaluation and Scoring
+We will be using the IoU to calculate the final score. IoU is Intersection over Union, where the Intersection set is an AND operation (pixels that are truly part of a class AND are classified as part of the class by the network) and the Union is an OR operation (pixels that are truly part of that class + pixels that are classified as part of that class by the network).
+Sum all the true positives, etc from the three datasets to get a weight for the score: 0.7341490545050056
+
+The IoU for the dataset that never includes the hero is excluded from grading: 0.561794675106
+
+The Final Grade Score is the pixel wise:
 ## 4.5 Testing in Simulation
 # 5. Future Enhancements
+Recording a bigger dataset capturing more angles/distances of the target will help in further improving the network accuracy.
+
+Adding more layers will also help in capturing more contexts and improve accuracy of segmentation.
+
+Changing learning rate can also be helpful in reducing learning time.
+
+Adding skip connections can improve results but up to a certain number of connections only based on number of layers that we have.
